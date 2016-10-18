@@ -8,7 +8,7 @@ var MAX_GAME_WIDTH = 10;
 var MIN_WIN_LENGTH = 3;
 var MAX_WIN_LENGTH = 10;
 var MIN_PLAYER_COUNT = 2;
-var MAX_PLAYER_COUNT = 2;
+var MAX_PLAYER_COUNT = 4;
 
 /* Global data. */
 
@@ -21,6 +21,9 @@ $(document).ready(function () {
     // Create the global object for the Calculator.
     gGame = new Game();
     gGame.resetGame();
+
+    // TODO: Fill in the logo section if not already filled in by HTML.
+
 });
 
 /********************************************************************************
@@ -53,13 +56,15 @@ function Game() {
         // Get the settings for this game.
         this.gameWidth = this.controlPanel.getGameWidth();
         this.cellCount = this.gameWidth * this.gameWidth;
-        this.winLength = this.controlPanel.getWinLength()
+        this.winLength = this.controlPanel.getWinLength();
         this.playerCount = this.controlPanel.getPlayerCount();
 
         // Create the cells.
         this.cells = [];
         for (var i = 0; i < this.cellCount; i++) {
-            this.cells.push(new Cell(i));
+            var cell = new Cell(this, i);
+            this.cells.push(cell);
+            $('#gameboard').append(cell.getElement());
         }
     }
 }
@@ -68,20 +73,47 @@ function Game() {
  * Cell object.
  *      Main Cell object to hold the context of one cell in the game.
  ********************************************************************************/
-function Cell(cellNum) {
-    console.log('Cell ' + cellNum + ': constructor');
-
+function Cell(parent, cellNum) {
     // Save a copy of this as self.
     var self = this;
+
+    // Parent = the Game object that owns the cell.
+    this.parent = parent;
 
     // Cell number in main Game array.
     this.cellNum = cellNum;
     this.getCellNum = function() { return this.cellNum };
 
+    // Cell name is just shorthand for 'Cell n'.
+    this.cellName = 'Cell ' + cellNum;
+    this.getCellName = function() { return this.cellName };
+    console.log(this.cellName + ': constructor');
+
     // Owner = null if cell free, otherwise player number.
     this.owner = null;
     this.getOwner = function() { return this.owner };
+    this.setOwner = function(playerNum) {
+        console.log(this.cellName + ': setOwner to ' + playerNum);
+    };
 
+    // Last played flag, set for the last cell that was played successfully.
+    this.lastPlayed = false;
+    this.isLastPlayed = function() { return this.lastPlayed };
+    this.setLastPlayed = function() {
+        console.log(this.cellName + ': setLastPlayed');
+        // TODO: Add class that highlights the cell.
+        this.lastPlayed = true;
+    };
+    this.clearLastPlayed = function() {
+        console.log(this.cellName + ': clearLastPlayed');
+        // TODO: Remove class that highlights the cell.
+        this.lastPlayed = false;
+    };
+
+    // Element for the cell itself.
+    var cellPercent = Math.floor(100 / parent.controlPanel.getGameWidth()).toString() + '%';
+    this.element = $('<div>').addClass('cell').css({width: cellPercent, height: cellPercent});
+    this.getElement = function() { return this.element };
 }
 
 /********************************************************************************
@@ -94,6 +126,10 @@ function ControlPanel() {
 
     // Save a copy of this as self.
     var self = this;
+
+    // Main element for the control panel div.
+    this.element = $('#control');
+    this.getElement = function() { return this.element };
 
     // Return temporary values for now; these will eventually be set from the control elements.
     this.gameWidth = MIN_GAME_WIDTH;
@@ -111,7 +147,7 @@ function ControlPanel() {
  * Player object.
  *      Main Player object to hold the context of one of the players.
  ********************************************************************************/
-function Players(playerNum) {
+function Player(playerNum) {
     console.log('Player ' + playerNum + ': constructor');
 
     // Save a copy of this as self.
@@ -121,4 +157,9 @@ function Players(playerNum) {
     this.playerNum = playerNum;
     this.getPlayerNum = this.playerNum;
     this.getPlayerName = 'Player ' + (this.playerNum + 1);
+
+    // Element for the player area for this player.
+    this.elementSelector = '#player:nth-child(' + playerNum + ')';
+    this.element = $(this.elementSelector);
+    this.getElement = function() { return this.element };
 }
