@@ -1,3 +1,7 @@
+/***** Universal *****/
+body* {
+    box-sizing: border-box;
+}
 /****** Wrappers *******/
 body {
     background-color: #4C3957;
@@ -75,14 +79,18 @@ div.player {
     border: 1px solid black;
 }
 /***** Gameboard *****/
-.gameboard {
+#gameboard {
     height: 100%;
     width: 75%;
-    margin: 0;
     display: inline-block;
     position: relative;
+    text-align: center;
 }
 /***** Cells *****/
 .cell {
     border: 1px solid lightsalmon;
+    display: inline-block;
+    position: relative;
+    top: 0;
+    font-size: 0;
 }
