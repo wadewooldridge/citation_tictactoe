@@ -1,0 +1,88 @@
+/****** Wrappers *******/
+body {
+    background-color: #4C3957;
+    height: 100vh;
+    width: 100vh;
+}
+#wrapper {
+    height: 100%;
+    width: 85%;
+    background-color: #414073;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+#inner-wrapper {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    font-size: 0;
+}
+/****** Header *******/
+
+header {
+    height: 15%;
+    width: 100%;
+    background-color: #41658A;
+    font-size: 0;
+}
+header .logo {
+    height: 100%;
+    width: 25%;
+    display: inline-block;
+    background-color: #414073;
+}
+header .control {
+    height: 100%;
+    width: 75%;
+    display: inline-block;
+    background-color: #79B473;
+}
+.left-control, .right-control {
+    width: 50%;
+    height: 100%;
+    display: inline-block;
+}
+.left-control {
+    left: 0;
+    background-color: #79B473;
+}
+.right-control {
+    right: 0;
+    background-color: #41658A;
+}
+/****** Main Content *******/
+#main-content {
+    height: 85%;
+    width: 100%;
+    margin: 0;
+    position: relative;
+}
+/***** Player Content *****/
+.players-content {
+    height: 100%;
+    width: 25%;
+    background-color: #70A37F;
+    display: inline-block;
+    position: relative;
+}
+div.player {
+    width: 100%;
+    height: 25%;
+    position: relative;
+    border: 1px solid black;
+}
+/***** Gameboard *****/
+.gameboard {
+    height: 100%;
+    width: 75%;
+    margin: 0;
+    display: inline-block;
+    position: relative;
+}
+/***** Cells *****/
+.cell {
+    border: 1px solid lightsalmon;
+}
