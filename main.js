@@ -41,13 +41,13 @@ function Game() {
     this.gameOver = false;
 
     // Main arrays for the child objects.
-    this.controlPanel = new ControlPanel();
+    this.controlPanel = new ControlPanel(this);
     this.cells = [];
 
     // Create all of the player objects, even if we don't use them all.
     this.players = [];
     for (var i = 0; i < MAX_PLAYER_COUNT; i++) {
-        this.players.push(new Player(i));
+        this.players.push(new Player(this, i));
     }
 
     // Save a copy of this as self.
@@ -164,11 +164,14 @@ function Cell(parent, cellNum) {
  *      Main ControlPanel object to handle control panel events and pass the
  *      control panel information to the main Game object.
  ********************************************************************************/
-function ControlPanel() {
+function ControlPanel(parent) {
     console.log('ControlPanel: constructor');
 
     // Save a copy of this as self.
     var self = this;
+
+    // Parent = the Game object that owns the cell.
+    this.parent = parent;
 
     // Main element for the control panel div.
     this.element = $('#control');
@@ -190,11 +193,14 @@ function ControlPanel() {
  * Player object.
  *      Main Player object to hold the context of one of the players.
  ********************************************************************************/
-function Player(playerNum) {
+function Player(parent, playerNum) {
     console.log('Player ' + playerNum + ': constructor');
 
     // Save a copy of this as self.
     var self = this;
+
+    // Parent = the Game object that owns the cell.
+    this.parent = parent;
 
     // Player number from 0 to MAX_PLAYER_COUNT - 1. Note that players[0] should display to user as 'Player 1'.
     this.playerNum = playerNum;
