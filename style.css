@@ -167,3 +167,19 @@ div.player {
 .cell img {
     height: 80%;
 }
+
+
+/***** Modals *****/
+.modal .right-answer.revealed {
+    background-color: lightgreen;
+}
+
+.modal .wrong-answer.revealed {
+    background-color: lightpink;
+}
+
+#question-footer-p {
+    width: 75%;
+    float: left;
+    text-align: left;
+}
