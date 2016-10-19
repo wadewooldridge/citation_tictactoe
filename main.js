@@ -36,6 +36,10 @@ function Game() {
     this.winLength = null;
     this.playerCount = null;
 
+    // Flags for the current gameplay.
+    this.currentPlayerNum = 0;
+    this.gameOver = false;
+
     // Main arrays for the child objects.
     this.controlPanel = new ControlPanel();
     this.cells = [];
@@ -49,6 +53,7 @@ function Game() {
     // Save a copy of this as self.
     var self = this;
 
+    //
     // Reset the game, either based on program initialization or the 'New Game' button.
     this.resetGame = function() {
         console.log('resetGame');
@@ -59,6 +64,10 @@ function Game() {
         this.winLength = this.controlPanel.getWinLength();
         this.playerCount = this.controlPanel.getPlayerCount();
 
+        // Reset the gameplay information.
+        this.currentPlayerNum = 0;
+        this.gameOver = false;
+
         // Create the cells.
         this.cells = [];
         for (var i = 0; i < this.cellCount; i++) {
@@ -66,7 +75,23 @@ function Game() {
             this.cells.push(cell);
             $('#gameboard').append(cell.getElement());
         }
-    }
+    };
+
+    // Notification from the cell that it was clicked.
+    this.notifyCellClicked = function(cellNum) {
+        console.log('notifyCellClicked: ' + cellNum);
+        var cell = self.cells[cellNum];
+
+        // If this is already clicked, ignore it.
+        if (cell.getOwner() !== null) {
+            console.log(cell.getCellName() + ' is already owned by ' + self.player.getName(cell.owner));
+            // TODO: Add some animation and/or sound if they should not have clicked here.
+        } else {
+            var player = self.players[this.currentPlayerNum];
+            cell.setOwner(self.currentPlayerNum);
+            cell.setImageFile(player.getImageFile());
+        }
+    };
 }
 
 /********************************************************************************
@@ -94,6 +119,7 @@ function Cell(parent, cellNum) {
     this.getOwner = function() { return this.owner };
     this.setOwner = function(playerNum) {
         console.log(this.cellName + ': setOwner to ' + playerNum);
+        this.owner = playerNum;
     };
 
     // Last played flag, set for the last cell that was played successfully.
@@ -110,10 +136,25 @@ function Cell(parent, cellNum) {
         this.lastPlayed = false;
     };
 
+    // Main click handler for the cell.
+    this.onClick = function() {
+        console.log(self.cellName + ': clicked');
+        self.parent.notifyCellClicked(self.cellNum);
+    };
+
     // Element for the cell itself.
     var cellPercent = Math.floor(100 / parent.controlPanel.getGameWidth()).toString() + '%';
     this.element = $('<div>').addClass('cell').css({width: cellPercent, height: cellPercent});
+    this.element.on('click', this.onClick);
     this.getElement = function() { return this.element };
+
+    // Image associated with the cell.
+    this.setImageFile = function(filename) {
+        console.log(self.cellName + ': setImageFile: ' + filename);
+        this.imageFile = filename;
+        $(this.element).attr('src', this.imageFile);
+    };
+
 }
 
 /********************************************************************************
@@ -159,7 +200,31 @@ function Player(playerNum) {
     this.getPlayerName = 'Player ' + (this.playerNum + 1);
 
     // Element for the player area for this player.
-    this.elementSelector = '#player:nth-child(' + playerNum + ')';
+    this.elementSelector = '#player' + playerNum;
     this.element = $(this.elementSelector);
     this.getElement = function() { return this.element };
+
+    // Pick a picture that goes with this player number.
+    // TODO: Allow user to select which image they want for their player icon.
+    switch (playerNum) {
+        case 0:
+            this.imageFile = 'images/x.png';
+            break;
+        case 1:
+            this.imageFile = 'images/x.png';
+            break;
+        case 2:
+            this.imageFile = 'images/x.png';
+            break;
+        case 3:
+            this.imageFile = 'images/x.png';
+            break;
+        default:
+            console.log('Invalid playerNum ' + playerNum);
+            this.imageFile = null;
+            break;
+    }
+    this.getImageFile = function() { return this.imageFile };
+    $(this.element).attr('src', this.imageFile);
+
 }
