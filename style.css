@@ -94,3 +94,7 @@ div.player {
     top: 0;
     font-size: 0;
 }
+
+.cell img {
+    width: 80%;
+}
