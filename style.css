@@ -108,28 +108,28 @@ div.player {
     border: 1px solid black;
     text-align: center;
 }
-#player0 {
+.player0 {
     background-color: #41658A;
     background-image: url("images/William_Shakespeare.png");
     background-position: center center;
     background-size: 35%;
     background-repeat: no-repeat;
 }
-#player1 {
+.player1 {
     background-color: #79B473;
     background-image: url("images/Stephen_King.png");
     background-position: center center;
     background-size: 35%;
     background-repeat: no-repeat;
 }
-#player2 {
+.player2 {
     background-color: #6C5D75;
     background-image: url("images/Charles_Dickens.png");
     background-position: center center;
     background-size: 35%;
     background-repeat: no-repeat;
 }
-#player3 {
+.player3 {
     background-color: #486851;
     background-image: url("images/George_Martin.png");
     background-position: center center;
@@ -160,8 +160,9 @@ div.player {
     position: relative;
     top: 0;
     font-size: 0;
+    vertical-align: top;
 }
 
 .cell img {
-    width: 80%;
+    height: 80%;
 }
