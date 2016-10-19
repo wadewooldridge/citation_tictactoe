@@ -88,11 +88,43 @@ function Game() {
             console.log(cell.getCellName() + ' is already owned by ' + playerName);
             // TODO: Add some animation and/or sound if they should not have clicked here.
         } else {
+            // The current player now owns the specified cell.
             var player = self.players[this.currentPlayerNum];
             cell.setOwner(self.currentPlayerNum);
             cell.setImageFile(player.getImageFile());
+
+            // Check whether the current play creates a winner.
+            var winner = self.checkForWinner(cellNum);
+
+            // Now move on to the next player.
+            this.selectNextPlayer();
         }
     };
+
+    // Move to the next player in the rotation.
+    this.selectNextPlayer = function() {
+        console.log('selectNextPlayer: was ' + this.currentPlayerNum);
+
+        // Clear the flag for the current player.
+        this.players[this.currentPlayerNum].setCurrent(false);
+
+        // Pick the next one in turn.
+        if (this.currentPlayerNum === this.playerCount - 1) {
+            this.currentPlayerNum = 0;
+        } else {
+            this.currentPlayerNum++;
+        }
+
+        // Set the flag for the new player.
+        this.players[this.currentPlayerNum].setCurrent(true);
+        console.log('selectNextPlayer: now ' + this.currentPlayerNum);
+    };
+
+    // Check whether the specified cell is a winner.
+    this.checkForWinner = function(cellNum) {
+        // TODO: Implement checks for matches in all eight directions.
+        return false;
+    }
 }
 
 /********************************************************************************
@@ -235,4 +267,11 @@ function Player(parent, playerNum) {
     this.getImageFile = function() { return this.imageFile };
     $(this.element).attr('src', this.imageFile);
 
+    // Current flag of whether this is the current player.
+    this.current = false;
+    this.setCurrent = function(current) {
+        console.log(this.getPlayerName() + ': setCurrent: ' + current);
+        this.current = current;
+        // TODO: Add/remove class based on whether this player is current.
+    }
 }
