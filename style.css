@@ -27,17 +27,28 @@ body {
 /****** Header *******/
 
 header {
-    height: 15%;
+   /* height: 15%;*/
     width: 100%;
     background-color: #41658A;
     font-size: 0;
+
 }
 header .logo {
     height: 100%;
     width: 25%;
     display: inline-block;
     background-color: #414073;
+
 }
+
+header img[src='images/logo.png'] {
+    width: 350px;
+    padding: 25px 10px 25px 25px;
+    max-width: 100%;
+
+
+}
+/****** CONTROL PANEL *******/
 header .control {
     height: 100%;
     width: 75%;
@@ -48,15 +59,33 @@ header .control {
     width: 50%;
     height: 100%;
     display: inline-block;
+    padding: 15px;
 }
 .left-control {
+    position: relative;
     left: 0;
     background-color: #79B473;
 }
 .right-control {
+    position: relative;
     right: 0;
     background-color: #41658A;
 }
+
+.right-control button {
+    width: 25%;
+    padding: 25px;
+    color: black;
+    font-size: 1.2em;
+    font-family: Arial sans-serif;
+    border-radius: 5px;
+}
+
+.left-control input {
+    width: 75%;
+}
+
+
 /****** Main Content *******/
 #main-content {
     height: 85%;

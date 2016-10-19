@@ -286,14 +286,38 @@ function ControlPanel(parent) {
 
     // Return temporary values for now; these will eventually be set from the control elements.
     this.gameWidth = MIN_GAME_WIDTH;
-    this.getGameWidth = function() { return this.gameWidth };
+    this.getGameWidth = function() {return this.gameWidth};
+
+    //Function for getting the Game Width from the sliders
+    $('#gameSize').change(function() {
+         var gameCells = parseInt($('#gameSize').val());
+        self.gameWidth = gameCells;
+        console.log('game width is now ' + self.gameWidth);
+    });
 
     this.winLength = MIN_WIN_LENGTH;
     this.getWinLength = function() { return this.winLength };
 
+    //Function for getting the Win Length from the sliders
+    $('#winLength').change(function() {
+        var winWay = parseInt($('#winLength').val());
+        self.winLength = winWay;
+         if(self.winLength > self.gameWidth) {
+             self.winLength = self.gameWidth;
+             console.log('winLength was greater than gameLength so winLength is ' + self.winLength);
+         } else {
+             self.winLength = winWay;
+         }
+    });
+
     this.playerCount = MIN_PLAYER_COUNT;
     this.getPlayerCount = function() { return this.playerCount };
 
+    console.log('before newGame function');
+    $('#newGame').click(function() {
+        console.log('newGame is being called');
+        self.parent.resetGame();
+    });
 }
 
 /********************************************************************************
