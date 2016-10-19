@@ -71,6 +71,9 @@ function Game() {
         this.currentPlayerNum = 0;
         this.gameOver = false;
 
+        // Delete any old cells.
+        $('#gameboard .cell').remove();
+
         // Create the cells.
         this.cells = [];
         for (var i = 0; i < this.cellCount; i++) {
@@ -93,6 +96,9 @@ function Game() {
             console.log(cell.getCellName() + ' is already owned by ' + playerName);
             // TODO: Add some animation and/or sound if they should not have clicked here.
         } else {
+            // TODO: This is temporary code to always pop up a question.
+            askRandomQuestion();
+
             // The current player now owns the specified cell.
             var player = self.players[this.currentPlayerNum];
             cell.setOwner(self.currentPlayerNum);
@@ -101,13 +107,14 @@ function Game() {
             // Check whether the current play creates a winner or a stalemate.
             var winningCells = self.checkForWinner(cellNum);
             if (winningCells.length >= self.winLength) {
-                console.log(player.getPlayerName() + ' is the winner!');
+                var message = player.getPlayerName() + ' is the winner!'
+                console.log(message);
                 self.gameOver = true;
-                // TODO: Make a pop-up that says the winner.
+                displayNotifyModal(message);
             } else if (++this.cellsFilled === this.cellCount) {
                 console.log('Game over without a winner.');
                 self.gameOver = true;
-                // TODO: Make a pop-up that says we have a stalemate.
+                displayNotifyModal('OOPS! The game over with no winner.')
             } else {
                 // Now move on to the next player.
                 self.selectNextPlayer();
