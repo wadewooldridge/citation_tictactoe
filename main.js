@@ -34,6 +34,8 @@ function Game() {
     console.log('Game: constructor');
     this.gameWidth = null;
     this.winLength = null;
+    this.cellCount = null;
+    this.cellsFilled = null;
     this.playerCount = null;
 
     // Flags for the current gameplay.
@@ -41,13 +43,13 @@ function Game() {
     this.gameOver = false;
 
     // Main arrays for the child objects.
-    this.controlPanel = new ControlPanel();
+    this.controlPanel = new ControlPanel(this);
     this.cells = [];
 
     // Create all of the player objects, even if we don't use them all.
     this.players = [];
     for (var i = 0; i < MAX_PLAYER_COUNT; i++) {
-        this.players.push(new Player(i));
+        this.players.push(new Player(this, i));
     }
 
     // Save a copy of this as self.
@@ -61,6 +63,7 @@ function Game() {
         // Get the settings for this game.
         this.gameWidth = this.controlPanel.getGameWidth();
         this.cellCount = this.gameWidth * this.gameWidth;
+        this.cellsFilled = 0;
         this.winLength = this.controlPanel.getWinLength();
         this.playerCount = this.controlPanel.getPlayerCount();
 
@@ -82,17 +85,114 @@ function Game() {
         console.log('notifyCellClicked: ' + cellNum);
         var cell = self.cells[cellNum];
 
-        // If this is already clicked, ignore it.
-        if (cell.getOwner() !== null) {
+        if (this.gameOver) {
+            console.log('Game already over: ignoring click');
+        } else if (cell.getOwner() !== null) {
+            // If this is already clicked, ignore it.
             var playerName = self.players[cell.getOwner()].getPlayerName();
             console.log(cell.getCellName() + ' is already owned by ' + playerName);
             // TODO: Add some animation and/or sound if they should not have clicked here.
         } else {
+            // The current player now owns the specified cell.
             var player = self.players[this.currentPlayerNum];
             cell.setOwner(self.currentPlayerNum);
             cell.setImageFile(player.getImageFile());
+
+            // Check whether the current play creates a winner or a stalemate.
+            var winningCells = self.checkForWinner(cellNum);
+            if (winningCells.length >= self.winLength) {
+                console.log(player.getPlayerName() + ' is the winner!');
+                self.gameOver = true;
+                // TODO: Make a pop-up that says the winner.
+            } else if (++this.cellsFilled === this.cellCount) {
+                console.log('Game over without a winner.');
+                self.gameOver = true;
+                // TODO: Make a pop-up that says we have a stalemate.
+            } else {
+                // Now move on to the next player.
+                self.selectNextPlayer();
+            }
         }
     };
+
+    // Move to the next player in the rotation.
+    this.selectNextPlayer = function() {
+        console.log('selectNextPlayer: was ' + this.currentPlayerNum);
+
+        // Clear the flag for the current player.
+        this.players[this.currentPlayerNum].setCurrent(false);
+
+        // Pick the next one in turn.
+        if (this.currentPlayerNum === this.playerCount - 1) {
+            this.currentPlayerNum = 0;
+        } else {
+            this.currentPlayerNum++;
+        }
+
+        // Set the flag for the new player.
+        this.players[this.currentPlayerNum].setCurrent(true);
+        console.log('selectNextPlayer: now ' + this.currentPlayerNum);
+    };
+
+    // Check whether the specified cell is a winner. If so, return array of winning cell numbers.
+    this.checkForWinner = function(cellNum) {
+        console.log('checkForWinner: ' + cellNum);
+        var matchArray = [];
+
+        // Check for matches left (offset -1) and right (offset +1).
+        matchArray = this.checkMatches(cellNum, 1, 1);
+        if (matchArray.length >= this.winLength) {
+            return matchArray;
+        }
+
+        // Check for matches up (offset -gameWidth) and down (offset +gameWidth).
+        matchArray = this.checkMatches(cellNum, this.gameWidth, this.gameWidth);
+        if (matchArray.length >= this.winLength) {
+            return matchArray;
+        }
+
+        // Check for matches up-left (offset -gameWidth-1) and down-right (offset +gameWidth+1).
+        matchArray = this.checkMatches(cellNum, this.gameWidth + 1, this.gameWidth + 1);
+        if (matchArray.length >= this.winLength) {
+            return matchArray;
+        }
+
+        // Check for matches upright (offset -gameWidth+1) and down-left (offset +gameWidth-1).
+        matchArray = this.checkMatches(cellNum, this.gameWidth - 1, this.gameWidth - 1);
+        if (matchArray.length >= this.winLength) {
+            return matchArray;
+        }
+
+        // Not a winner; return an empty array as an indication.
+        return [];
+    };
+
+    // Check for matches in a negative direction plus a positive direction. Return array of matches.
+    this.checkMatches = function(cellNum, negOffset, posOffset) {
+        console.log('checkMatches: ' + cellNum + '<-' + negOffset + ',' + posOffset + '>');
+        var matchOwner = this.cells[cellNum].getOwner();
+        var retArray = [cellNum];
+        var curCellNum;
+
+        // Check cells in the negative direction while still on the board, adding matches.
+        curCellNum = cellNum - negOffset;
+        while (curCellNum >= 0 && this.cells[curCellNum].getOwner() == matchOwner) {
+            console.log('Match at ' + curCellNum);
+            retArray.push(curCellNum);
+            curCellNum -= negOffset;
+        }
+
+        // Check cells in the positive direction while still on the board, adding matches.
+        curCellNum = cellNum + posOffset;
+        while (curCellNum < self.cellCount && this.cells[curCellNum].getOwner() == matchOwner) {
+            console.log('Match at ' + curCellNum);
+            retArray.push(curCellNum);
+            curCellNum += posOffset;
+        }
+        console.log(retArray);
+        return retArray;
+    };
+
 }
 
 /********************************************************************************
@@ -164,11 +264,14 @@ function Cell(parent, cellNum) {
  *      Main ControlPanel object to handle control panel events and pass the
  *      control panel information to the main Game object.
  ********************************************************************************/
-function ControlPanel() {
+function ControlPanel(parent) {
     console.log('ControlPanel: constructor');
 
     // Save a copy of this as self.
     var self = this;
+
+    // Parent = the Game object that owns the cell.
+    this.parent = parent;
 
     // Main element for the control panel div.
     this.element = $('#control');
@@ -190,11 +293,14 @@ function ControlPanel() {
  * Player object.
  *      Main Player object to hold the context of one of the players.
  ********************************************************************************/
-function Player(playerNum) {
+function Player(parent, playerNum) {
     console.log('Player ' + playerNum + ': constructor');
 
     // Save a copy of this as self.
     var self = this;
+
+    // Parent = the Game object that owns the cell.
+    this.parent = parent;
 
     // Player number from 0 to MAX_PLAYER_COUNT - 1. Note that players[0] should display to user as 'Player 1'.
     this.playerNum = playerNum;
@@ -229,4 +335,11 @@ function Player(playerNum) {
     this.getImageFile = function() { return this.imageFile };
     $(this.element).attr('src', this.imageFile);
 
+    // Current flag of whether this is the current player.
+    this.current = false;
+    this.setCurrent = function(current) {
+        console.log(this.getPlayerName() + ': setCurrent: ' + current);
+        this.current = current;
+        // TODO: Add/remove class based on whether this player is current.
+    }
 }
