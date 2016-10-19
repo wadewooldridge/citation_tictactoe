@@ -361,7 +361,7 @@ function Player(parent, playerNum) {
     this.getPlayerName = function() { return 'Player ' + (this.playerNum + 1) };
 
     // Element for the player area for this player.
-    this.elementSelector = '#player' + playerNum;
+    this.elementSelector = '.player' + playerNum;
     this.element = $(this.elementSelector);
     this.getElement = function() { return this.element };
 
@@ -394,5 +394,12 @@ function Player(parent, playerNum) {
         console.log(this.getPlayerName() + ': setCurrent: ' + current);
         this.current = current;
         // TODO: Add/remove class based on whether this player is current.
+        if(current) {
+            console.log('At current', self.element);
+            $(self.element).addClass('current-player');
+        }
+        else {
+            $(self.element).removeClass('current-player');
+        }
     }
 }
