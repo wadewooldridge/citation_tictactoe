@@ -96,8 +96,16 @@ function Game() {
             console.log(cell.getCellName() + ' is already owned by ' + playerName);
             // TODO: Add some animation and/or sound if they should not have clicked here.
         } else {
-            // TODO: This is temporary code to always pop up a question.
-            askRandomQuestion();
+            // TODO: This is temporary code to pop up on some cells.
+            if (cellNum & 1) {
+                // No question; complete the turn immediately.
+
+            } else {
+                // Make the user answer a question before completing their turn.
+
+            }
+            var correct = askRandomQuestion();
+            console.log('notifyCellClicked: correct: ', correct);
 
             // The current player now owns the specified cell.
             var player = self.players[this.currentPlayerNum];
@@ -121,6 +129,13 @@ function Game() {
             }
         }
     };
+
+    // Complete the current player's turn. If there is no question, this happens directly and is passed
+    // undefined as the success value.  If there is a question, this happens from the modal close, and
+    // is passed the success value of whether they got the question right.
+    this.completeCurrentTurn = function(success) {
+        console.log('completeCurrentTurn');
+    }
 
     // Move to the next player in the rotation.
     this.selectNextPlayer = function() {
