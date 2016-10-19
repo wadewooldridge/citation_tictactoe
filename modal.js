@@ -3,7 +3,7 @@
  */
 
 var questions = [
-    {   question:   'Veronica Smith\nMr. Thornton\nU.S. History – Per. 2\n10 Sept. 2016\n' +
+    {   question:   'Veronica Smith\nMr. Thornton\nU.S. History -- Per. 2\n10 Sept. 2016\n' +
                     'Question: Is this a proper MLA heading?',
         answers:    ['a: Yes', 'b: No'],
         correct:    'b',
@@ -179,13 +179,11 @@ var questions = [
 ];
 
 var gQuestionObject = null;
-var gCorrect = false;
 
-function askRandomQuestion() {
+function askRandomQuestion(parent) {
     console.log('askRandomQuestion');
     // Pick a random question object.
     gQuestionObject = questions[Math.floor(Math.random() * questions.length)];
-    gCorrect = false;
     var i;
 
     var modalElem = $('#question-modal');
@@ -216,6 +214,7 @@ function askRandomQuestion() {
         // Click handler for the answer paragraphs.
         ansElem.click(function() {
             console.log('Model click handler');
+            var correct;
 
             // Reveal all the right and wrong answers.
             $('#question-body p').addClass('revealed');
@@ -224,26 +223,30 @@ function askRandomQuestion() {
             if ($(this).hasClass('right-answer')) {
                 console.log('Right answer');
                 $('#question-footer-p').text('Correct! ' + gQuestionObject.notes);
-                gCorrect = true;
+                correct = true;
             } else {
                 console.log('Wrong answer');
                 $('#question-footer-p').text('Incorrect! ' + gQuestionObject.notes);
-                gCorrect = false;
+                correct = false;
             }
+            parent.completeCurrentTurn(null, correct);
         });
 
         ansElem.appendTo(modalBodyElem);
+
     }
-
+/*
+    // Have the hiding of this modal call back to continue the game.
     modalElem.on('hide.bs.modal', function() {
+        if (gCorrect === null) {
+            console.log('modal hide ignored.');
+        }
         console.log('Modal now hidden.');
-
+        parent.completeCurrentTurn(cellNum, gCorrect);
     });
+*/
 
-    console.log('askRandomQuestion: returning');
     modalElem.modal('show');
-    console.log('askRandomQuestion: returning');
-    return gCorrect;
 
 /*
     // Build a custom modal object.

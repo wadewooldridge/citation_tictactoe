@@ -86,6 +86,7 @@ function Game() {
     // Notification from the cell that it was clicked.
     this.notifyCellClicked = function(cellNum) {
         console.log('notifyCellClicked: ' + cellNum);
+        self.savedCellNum = cellNum;
         var cell = self.cells[cellNum];
 
         if (this.gameOver) {
@@ -96,16 +97,34 @@ function Game() {
             console.log(cell.getCellName() + ' is already owned by ' + playerName);
             // TODO: Add some animation and/or sound if they should not have clicked here.
         } else {
-            // TODO: This is temporary code to pop up on some cells.
-            if (cellNum & 1) {
+            // TODO: Currently has 1-in-3 chance of asking a question; this could be made user-selectable.
+            if (Math.random() < 0.667) {
                 // No question; complete the turn immediately.
-
+                self.completeCurrentTurn(cellNum);
             } else {
                 // Make the user answer a question before completing their turn.
+                var correct = askRandomQuestion(self);
+                console.log('notifyCellClicked: correct: ', correct);
+
 
             }
-            var correct = askRandomQuestion();
-            console.log('notifyCellClicked: correct: ', correct);
+        }
+    };
+
+    // Complete the current player's turn. If there is no question, this happens directly and is passed
+    // undefined as the success value.  If there is a question, this happens from the modal close, and
+    // is passed the success value of whether they got the question right.
+    this.completeCurrentTurn = function(cellNum, success) {
+        if (cellNum === null) {
+            cellNum = self.savedCellNum;
+        }
+        if (success === undefined) {
+            success = true;
+        }
+        console.log('completeCurrentTurn: ' + cellNum + ', ' + success);
+
+        if (success) {
+            var cell = self.cells[cellNum];
 
             // The current player now owns the specified cell.
             var player = self.players[this.currentPlayerNum];
@@ -122,19 +141,14 @@ function Game() {
                 console.log('Game over without a winner.');
                 self.gameOver = true;
                 displayNotifyModal('OOPS! The game over with no winner.')
-            } else {
-                // Now move on to the next player.
-                self.selectNextPlayer();
             }
+        } else {
+            console.log('completeCurrentTurn: ignoring failed question.')
         }
-    };
 
-    // Complete the current player's turn. If there is no question, this happens directly and is passed
-    // undefined as the success value.  If there is a question, this happens from the modal close, and
-    // is passed the success value of whether they got the question right.
-    this.completeCurrentTurn = function(success) {
-        console.log('completeCurrentTurn');
-    }
+        // Now move on to the next player.
+        self.selectNextPlayer();
+    };
 
     // Move to the next player in the rotation.
     this.selectNextPlayer = function() {
@@ -197,6 +211,7 @@ function Game() {
 
         // Check cells in the negative direction while still on the board, adding matches.
         curCellNum = cellNum - negOffset;
+        console.log('Check: ' + curCellNum);
         while (curCellNum >= 0 && this.cells[curCellNum].getOwner() == matchOwner) {
             console.log('Match at ' + curCellNum);
             retArray.push(curCellNum);
@@ -205,6 +220,7 @@ function Game() {
 
         // Check cells in the positive direction while still on the board, adding matches.
         curCellNum = cellNum + posOffset;
+        console.log('Check: ' + curCellNum);
         while (curCellNum < self.cellCount && this.cells[curCellNum].getOwner() == matchOwner) {
             console.log('Match at ' + curCellNum);
             retArray.push(curCellNum);
