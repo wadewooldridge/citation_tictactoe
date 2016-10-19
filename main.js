@@ -84,7 +84,8 @@ function Game() {
 
         // If this is already clicked, ignore it.
         if (cell.getOwner() !== null) {
-            console.log(cell.getCellName() + ' is already owned by ' + self.player.getName(cell.owner));
+            var playerName = self.players[cell.getOwner()].getPlayerName();
+            console.log(cell.getCellName() + ' is already owned by ' + playerName);
             // TODO: Add some animation and/or sound if they should not have clicked here.
         } else {
             var player = self.players[this.currentPlayerNum];
@@ -152,7 +153,8 @@ function Cell(parent, cellNum) {
     this.setImageFile = function(filename) {
         console.log(self.cellName + ': setImageFile: ' + filename);
         this.imageFile = filename;
-        $(this.element).attr('src', this.imageFile);
+        this.imgElement = $('<img>').attr('src', this.imageFile);
+        this.element.append(this.imgElement);
     };
 
 }
@@ -197,7 +199,7 @@ function Player(playerNum) {
     // Player number from 0 to MAX_PLAYER_COUNT - 1. Note that players[0] should display to user as 'Player 1'.
     this.playerNum = playerNum;
     this.getPlayerNum = this.playerNum;
-    this.getPlayerName = 'Player ' + (this.playerNum + 1);
+    this.getPlayerName = function() { return 'Player ' + (this.playerNum + 1) };
 
     // Element for the player area for this player.
     this.elementSelector = '#player' + playerNum;
@@ -208,16 +210,16 @@ function Player(playerNum) {
     // TODO: Allow user to select which image they want for their player icon.
     switch (playerNum) {
         case 0:
-            this.imageFile = 'images/x.png';
+            this.imageFile = 'images/Charles_Dickens.png';
             break;
         case 1:
-            this.imageFile = 'images/x.png';
+            this.imageFile = 'images/George_Martin.png';
             break;
         case 2:
-            this.imageFile = 'images/x.png';
+            this.imageFile = 'images/Stephen_King.png';
             break;
         case 3:
-            this.imageFile = 'images/x.png';
+            this.imageFile = 'images/William_Shakespeare.png';
             break;
         default:
             console.log('Invalid playerNum ' + playerNum);
