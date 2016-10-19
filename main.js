@@ -110,7 +110,6 @@ function Game() {
             // The current player now owns the specified cell.
             var player = self.players[this.currentPlayerNum];
             cell.setOwner(self.currentPlayerNum);
-            cell.setImageFile(player.getImageFile());
 
             // Check whether the current play creates a winner or a stalemate.
             var winningCells = self.checkForWinner(cellNum);
@@ -243,6 +242,7 @@ function Cell(parent, cellNum) {
     this.setOwner = function(playerNum) {
         console.log(this.cellName + ': setOwner to ' + playerNum);
         this.owner = playerNum;
+        this.element.addClass('player'+ playerNum);
     };
 
     // Last played flag, set for the last cell that was played successfully.
@@ -270,15 +270,6 @@ function Cell(parent, cellNum) {
     this.element = $('<div>').addClass('cell').css({width: cellPercent, height: cellPercent});
     this.element.on('click', this.onClick);
     this.getElement = function() { return this.element };
-
-    // Image associated with the cell.
-    this.setImageFile = function(filename) {
-        console.log(self.cellName + ': setImageFile: ' + filename);
-        this.imageFile = filename;
-        this.imgElement = $('<img>').attr('src', this.imageFile);
-        this.element.append(this.imgElement);
-    };
-
 }
 
 /********************************************************************************
