@@ -77,6 +77,44 @@ div.player {
     height: 25%;
     position: relative;
     border: 1px solid black;
+    text-align: center;
+}
+#player0 {
+    background-color: #41658A;
+    background-image: url("images/William_Shakespeare.png");
+    background-position: center center;
+    background-size: 35%;
+    background-repeat: no-repeat;
+}
+#player1 {
+    background-color: #79B473;
+    background-image: url("images/Stephen_King.png");
+    background-position: center center;
+    background-size: 35%;
+    background-repeat: no-repeat;
+}
+#player2 {
+    background-color: #6C5D75;
+    background-image: url("images/Charles_Dickens.png");
+    background-position: center center;
+    background-size: 35%;
+    background-repeat: no-repeat;
+}
+#player3 {
+    background-color: #486851;
+    background-image: url("images/George_Martin.png");
+    background-position: center center;
+    background-size: 35%;
+    background-repeat: no-repeat;
+}
+.player input {
+    bottom: 20%;
+    height: 20px;
+    width: 50%;
+    display: inline-block;
+    clear: both;
+    font-size: 12px;
+    text-align: center;
 }
 /***** Gameboard *****/
 #gameboard {
