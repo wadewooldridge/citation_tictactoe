@@ -59,7 +59,7 @@ function Game() {
     // Reset the game, either based on program initialization or the 'New Game' button.
     this.resetGame = function() {
         console.log('resetGame');
-
+        self.makePlayersActive();
         // Get the settings for this game.
         this.gameWidth = this.controlPanel.getGameWidth();
         this.cellCount = this.gameWidth * this.gameWidth;
@@ -229,6 +229,23 @@ function Game() {
         console.log(retArray);
         return retArray;
     };
+    this.makePlayersActive = function() {
+        console.log('this is the makePlayers Active function');
+        if (self.playerCount < 4){
+            self.players[3].setInactive();
+
+        } else {
+            self.players[3].setActive();
+        }
+
+        if (self.playerCount < 3) {
+            self.players[2].setInactive();
+
+        } else {
+            self.players[2].setActive();
+
+        }
+    }
 
 }
 
@@ -315,6 +332,7 @@ function ControlPanel(parent) {
          var gameCells = parseInt($('#gameSize').val());
         self.gameWidth = gameCells;
         console.log('game width is now ' + self.gameWidth);
+        $('span.gameSizeText').text(self.gameWidth);
     });
 
     this.winLength = MIN_WIN_LENGTH;
@@ -330,6 +348,9 @@ function ControlPanel(parent) {
          } else {
              self.winLength = winWay;
          }
+          var winLengthText;
+          $('span.winLengthText').text(self.winLength);
+          //winLengthText = winLengthText.append(self.winLength);
     });
 
     this.playerCount = MIN_PLAYER_COUNT;
@@ -339,7 +360,19 @@ function ControlPanel(parent) {
     $('#newGame').click(function() {
         console.log('newGame is being called');
         self.parent.resetGame();
+
     });
+
+    //Gets the amount of players from radio buttons
+    $('input[name=playerCount]').change(function() {
+        var playerAmount;
+        playerAmount = parseInt($('input[type=radio]:checked').val());
+        self.playerCount = playerAmount;
+        console.log(self.playerCount + ' players selected');
+
+    });
+
+
 }
 
 /********************************************************************************
@@ -364,6 +397,16 @@ function Player(parent, playerNum) {
     this.elementSelector = '.player' + playerNum;
     this.element = $(this.elementSelector);
     this.getElement = function() { return this.element };
+
+    //Functions to make players inactive
+    this.setInactive = function() {
+        console.log('Setting the player to inactive');
+        $(self.element).addClass('inactive');
+    };
+    this.setActive = function() {
+        console.log('setting the player to active');
+        $(self.element).removeClass('inactive');
+    };
 
     // Pick a picture that goes with this player number.
     // TODO: Allow user to select which image they want for their player icon.

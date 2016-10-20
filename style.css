@@ -26,10 +26,12 @@ body {
 /****** Header *******/
 
 header {
-   /* height: 15%;*/
+    /*height: 15%;*/
     width: 100%;
     background-color: #41658A;
-    font-size: 0;
+    font-size: initial;
+    box-sizing: border-box;
+
 
 }
 header .logo {
@@ -45,20 +47,22 @@ header img[src='images/logo.png'] {
     padding: 25px 10px 25px 25px;
     max-width: 100%;
 
-
 }
 /****** CONTROL PANEL *******/
+
 header .control {
     height: 100%;
-    width: 75%;
+    width: 74%;
     display: inline-block;
     background-color: #79B473;
+
 }
 .left-control, .right-control {
-    width: 50%;
+    width: 49%;
     height: 100%;
     display: inline-block;
     padding: 15px;
+
 }
 .left-control {
     position: relative;
@@ -75,7 +79,7 @@ header .control {
     width: 25%;
     padding: 25px;
     color: black;
-    font-size: 1.2em;
+    font-size: 12px;
     font-family: Arial sans-serif;
     border-radius: 5px;
 }
@@ -84,6 +88,9 @@ header .control {
     width: 75%;
 }
 
+.input[type=radio] {
+    display: inline;
+}
 
 /****** Main Content *******/
 #main-content {
@@ -174,6 +181,9 @@ header .control {
     height: 80%;
 }
 
+.inactive {
+    opacity: 0.5;
+}
 
 /***** Modals *****/
 .modal .right-answer.revealed {
