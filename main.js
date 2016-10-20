@@ -174,26 +174,26 @@ function Game() {
         console.log('checkForWinner: ' + cellNum);
         var matchArray = [];
 
-        // Check for matches left (offset -1) and right (offset +1).
+        // Check for matches left and right (x offset 1, y offset 0).
+        matchArray = this.checkMatches(cellNum, 1, 0);
+        if (matchArray.length >= this.winLength) {
+            return matchArray;
+        }
+
+        // Check for matches up and down (x offset 0, y offset 1).
+        matchArray = this.checkMatches(cellNum, 0, 1);
+        if (matchArray.length >= this.winLength) {
+            return matchArray;
+        }
+
+        // Check for matches up-left and down-right (x offset 1, y offset 1).
         matchArray = this.checkMatches(cellNum, 1, 1);
         if (matchArray.length >= this.winLength) {
             return matchArray;
         }
 
-        // Check for matches up (offset -gameWidth) and down (offset +gameWidth).
-        matchArray = this.checkMatches(cellNum, this.gameWidth, this.gameWidth);
-        if (matchArray.length >= this.winLength) {
-            return matchArray;
-        }
-
-        // Check for matches up-left (offset -gameWidth-1) and down-right (offset +gameWidth+1).
-        matchArray = this.checkMatches(cellNum, this.gameWidth + 1, this.gameWidth + 1);
-        if (matchArray.length >= this.winLength) {
-            return matchArray;
-        }
-
-        // Check for matches upright (offset -gameWidth+1) and down-left (offset +gameWidth-1).
-        matchArray = this.checkMatches(cellNum, this.gameWidth - 1, this.gameWidth - 1);
+        // Check for matches up-right and down-left (x offset 1, y offset -1).
+        matchArray = this.checkMatches(cellNum, 1, -1);
         if (matchArray.length >= this.winLength) {
             return matchArray;
         }
@@ -203,28 +203,51 @@ function Game() {
     };
 
     // Check for matches in a negative direction plus a positive direction. Return array of matches.
-    this.checkMatches = function(cellNum, negOffset, posOffset) {
-        console.log('checkMatches: ' + cellNum + '<-' + negOffset + ',' + posOffset + '>');
+    this.checkMatches = function(cellNum, xOffset, yOffset) {
+        console.log('checkMatches: ' + cellNum + ' <' + xOffset + ',' + yOffset + '>');
+        var cellY = Math.floor(cellNum / this.gameWidth);
+        var cellX = cellNum - (cellY * this.gameWidth);
+        console.log('checkMatches: at (', + cellX + ',' + cellY + ')');
+
         var matchOwner = this.cells[cellNum].getOwner();
         var retArray = [cellNum];
-        var curCellNum;
+        var curCellNum, curX, curY;
+
+        // The cellOffset factors in the xOffset and the yOffset.
+        var cellOffset = (yOffset * this.gameWidth) + xOffset;
+
+        // Get the x and y positions of the current cell.
+        curCellNum = cellNum - cellOffset;
+        curX = cellX - xOffset;
+        curY = cellY - yOffset;
 
         // Check cells in the negative direction while still on the board, adding matches.
-        curCellNum = cellNum - negOffset;
-        console.log('Check: ' + curCellNum);
-        while (curCellNum >= 0 && this.cells[curCellNum].getOwner() == matchOwner) {
+        console.log('Check: ' + curCellNum + ' = (' + curX + ',' + curY + ')');
+        while (curCellNum >= 0 && curX >= 0 && curY >= 0 &&
+                curCellNum <= this.cellCount && curX < this.gameWidth && curY < this.gameWidth &&
+                this.cells[curCellNum].getOwner() == matchOwner) {
             console.log('Match at ' + curCellNum);
             retArray.push(curCellNum);
-            curCellNum -= negOffset;
+            curCellNum -= cellOffset;
+            curX -= xOffset;
+            curY -= yOffset;
         }
 
+        // Get the x and y positions of the current cell.
+        curCellNum = cellNum + cellOffset;
+        curX = cellX + xOffset;
+        curY = cellY + yOffset;
+
         // Check cells in the positive direction while still on the board, adding matches.
-        curCellNum = cellNum + posOffset;
-        console.log('Check: ' + curCellNum);
-        while (curCellNum < self.cellCount && this.cells[curCellNum].getOwner() == matchOwner) {
+        console.log('Check: ' + curCellNum + ' = (' + curX + ',' + curY + ')');
+        while (curCellNum >= 0 && curX >= 0 && curY >= 0 &&
+                curCellNum <= this.cellCount && curX < this.gameWidth && curY < this.gameWidth &&
+                this.cells[curCellNum].getOwner() == matchOwner) {
             console.log('Match at ' + curCellNum);
             retArray.push(curCellNum);
-            curCellNum += posOffset;
+            curCellNum += cellOffset;
+            curX += xOffset;
+            curY += yOffset;
         }
         console.log(retArray);
         return retArray;
