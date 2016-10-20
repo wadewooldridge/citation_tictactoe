@@ -59,14 +59,14 @@ function Game() {
     // Reset the game, either based on program initialization or the 'New Game' button.
     this.resetGame = function() {
         console.log('resetGame');
-        self.makePlayersActive();
+
         // Get the settings for this game.
         this.gameWidth = this.controlPanel.getGameWidth();
         this.cellCount = this.gameWidth * this.gameWidth;
         this.cellsFilled = 0;
         this.winLength = this.controlPanel.getWinLength();
         this.playerCount = this.controlPanel.getPlayerCount();
-
+        self.makePlayersActive();
         // Reset the gameplay information.
         this.currentPlayerNum = 0;
         this.gameOver = false;
