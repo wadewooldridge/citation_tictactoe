@@ -3,7 +3,7 @@
  */
 
 var questions = [
-    {   question:   'Veronica Smith\nMr. Thornton\nU.S. History – Per. 2\n10 Sept. 2016\n' +
+    {   question:   'Veronica Smith\nMr. Thornton\nU.S. History -- Per. 2\n10 Sept. 2016\n' +
                     'Question: Is this a proper MLA heading?',
         answers:    ['a: Yes', 'b: No'],
         correct:    'b',
@@ -50,7 +50,7 @@ var questions = [
     {   question:   'When do you cite a source in your paper?',
         answers:    ['a. When you directly quote someone or something',
                      'b. When you interview someone and use something that they said.',
-                     'c. When you use common knowledge – like "Water freezes at 32 degrees F".',
+                     'c. When you use common knowledge -- like "Water freezes at 32 degrees F".',
                      'd. When you put a direct quote into your own words.',
                      'e. (a), (b), and (d) only.'],
         correct:    'e',
@@ -179,20 +179,20 @@ var questions = [
 ];
 
 var gQuestionObject = null;
-var gCorrect = false;
 
-function askRandomQuestion() {
+function askRandomQuestion(parent) {
     console.log('askRandomQuestion');
     // Pick a random question object.
     gQuestionObject = questions[Math.floor(Math.random() * questions.length)];
-    gCorrect = false;
     var i;
 
     var modalElem = $('#question-modal');
     var modalBodyElem = $('#question-body');
+    var modalFooterElem = $('#question-footer');
 
     // Get rid of any old questions and answers.
     $('#question-body p').remove();
+    $('#question-footer-p').text('');
 
     // Add the question and the answers to the modal-body.
     var questionParts = gQuestionObject.question.split('\n');
@@ -204,14 +204,47 @@ function askRandomQuestion() {
         var answer = gQuestionObject.answers[i];
 
         var ansElem = $('<p>').text(gQuestionObject.answers[i]);
+        // Mark which answer is correct.
+        if (answer[0] === gQuestionObject.correct) {
+            ansElem.addClass('right-answer');
+        } else {
+            ansElem.addClass('wrong-answer');
+        }
 
         // Click handler for the answer paragraphs.
         ansElem.click(function() {
             console.log('Model click handler');
+            var correct;
+
+            // Reveal all the right and wrong answers.
+            $('#question-body p').addClass('revealed');
+
+            // Set the footer based on whether this is the right answer.
+            if ($(this).hasClass('right-answer')) {
+                console.log('Right answer');
+                $('#question-footer-p').text('Correct! ' + gQuestionObject.notes);
+                correct = true;
+            } else {
+                console.log('Wrong answer');
+                $('#question-footer-p').text('Incorrect! ' + gQuestionObject.notes);
+                correct = false;
+            }
+            parent.completeCurrentTurn(null, correct);
         });
 
         ansElem.appendTo(modalBodyElem);
+
     }
+/*
+    // Have the hiding of this modal call back to continue the game.
+    modalElem.on('hide.bs.modal', function() {
+        if (gCorrect === null) {
+            console.log('modal hide ignored.');
+        }
+        console.log('Modal now hidden.');
+        parent.completeCurrentTurn(cellNum, gCorrect);
+    });
+*/
 
     modalElem.modal('show');
 
@@ -249,4 +282,5 @@ function displayNotifyModal(newText) {
     $('#notify-body p').text(newText);
 
     modalElem.modal('show');
+    // TODO: Figure out why this displays the question modal as well.
 }
