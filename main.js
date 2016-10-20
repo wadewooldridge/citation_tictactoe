@@ -322,7 +322,7 @@ function Cell(parent, cellNum) {
     };
 
     // Element for the cell itself.
-    var cellPercent = Math.floor(100 / parent.controlPanel.getGameWidth()).toString() + '%';
+    var cellPercent = (100 / parent.controlPanel.getGameWidth()).toString() + '%';
     this.element = $('<div>').addClass('cell').css({width: cellPercent, height: cellPercent});
     this.element.on('click', this.onClick);
     this.getElement = function() { return this.element };
