@@ -193,7 +193,7 @@ header .control {
 }
 
 .current-player {
-    border: 10px solid lightsalmon;
+    border: 10px solid black;
 }
 
 /***** Gameboard *****/
@@ -208,7 +208,7 @@ header .control {
 
 /***** Cells *****/
 .cell {
-    border: 1px solid lightsalmon;
+    border: 1px solid black;
     display: inline-block;
     position: relative;
     top: 0;
