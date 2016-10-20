@@ -21,10 +21,29 @@
             </div>
             <div class="control">
                 <div class="left-control">
+                    <!--Range sliders for the amount of squares and for the Win Count-->
                     <label for="gameSize">Game Width:</label>
+                    <span class="gameSizeText"> </span>
                     <input type="range" min="3" max="20" value="3" id="gameSize">
-                    <label for="winLength"># of Sequential Squares Need to Win</label>
+                    <label for="winLength"># of Squares Needed to Win:</label>
+                    <span class="winLengthText"> </span>
                     <input type="range" min="3" max="20" value="3" id="winLength">
+
+                    <!--Amount of Players-->
+                    <p>Players: </p>
+                    <input id="playerCount1" class="playerAmount playerAmountInput" type="radio" name="playerCount"
+                           value="1">
+                    <label for="playerCount1" class="playerAmountLabel playerAmount">1</label>
+
+                    <input id="playerCount2" class="playerAmount playerAmountInput" type="radio" name="playerCount"
+                           value="2" checked>
+                    <label for="playerCount2" class="playerAmountLabel playerAmount">2</label>
+
+                    <input id="playerCount3" class="playerAmount playerAmountInput" type="radio" name="playerCount" value="3">
+                    <label for="playerCount3" class="playerAmountLabel playerAmount">3</label>
+
+                    <input id="playerCount4" class="playerAmount playerAmountInput" type="radio" name="playerCount" value="4">
+                    <label for="playerCount4" class="playerAmountLabel playerAmount">4</label>
                 </div>
                 <div class="right-control">
                     <button id="newGame" value="New Game" type="button" name="button">New Game</button>
