@@ -28,25 +28,25 @@
                     <label for="winLength"># of Squares Needed to Win:</label>
                     <span class="winLengthText"> </span>
                     <input type="range" min="3" max="20" value="3" id="winLength">
-
                     <!--Amount of Players-->
                     <p>Players: </p>
-                    <input id="playerCount1" class="playerAmount playerAmountInput" type="radio" name="playerCount"
-                           value="1">
-                    <label for="playerCount1" class="playerAmountLabel playerAmount">1</label>
-
                     <input id="playerCount2" class="playerAmount playerAmountInput" type="radio" name="playerCount"
                            value="2" checked>
                     <label for="playerCount2" class="playerAmountLabel playerAmount">2</label>
 
-                    <input id="playerCount3" class="playerAmount playerAmountInput" type="radio" name="playerCount" value="3">
+                    <input id="playerCount3" class="playerAmount playerAmountInput" type="radio" name="playerCount"
+                           value="3">
                     <label for="playerCount3" class="playerAmountLabel playerAmount">3</label>
 
-                    <input id="playerCount4" class="playerAmount playerAmountInput" type="radio" name="playerCount" value="4">
+                    <input id="playerCount4" class="playerAmount playerAmountInput" type="radio" name="playerCount"
+                           value="4">
                     <label for="playerCount4" class="playerAmountLabel playerAmount">4</label>
                 </div>
                 <div class="right-control">
-                    <button id="newGame" value="New Game" type="button" name="button">New Game</button>
+                    <div class="button-wrapper">
+                        <button class="btn-warning" id="newGame" value="New Game" type="button" name="button">New Game
+                        </button>
+                    </div>
                 </div>
             </div>
         </header>
