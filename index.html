@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Citation TicTacToe</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -23,13 +25,14 @@
                 <div class="left-control">
                     <!--Range sliders for the amount of squares and for the Win Count-->
                     <label for="gameSize">Game Width:</label>
-                    <span class="gameSizeText"> </span>
+                    <span class="gameSizeText">3</span>
                     <input type="range" min="3" max="20" value="3" id="gameSize">
-                    <label for="winLength"># of Squares Needed to Win:</label>
-                    <span class="winLengthText"> </span>
+                    <label for="winLength">Win Length:</label>
+                    <span class="winLengthText">3</span>
                     <input type="range" min="3" max="20" value="3" id="winLength">
-                    <!--Amount of Players-->
-                    <p>Players: </p>
+                </div>
+                <div class="right-control">
+                    <label>Players:</label><br>
                     <input id="playerCount2" class="playerAmount playerAmountInput" type="radio" name="playerCount"
                            value="2" checked>
                     <label for="playerCount2" class="playerAmountLabel playerAmount">2</label>
@@ -41,10 +44,8 @@
                     <input id="playerCount4" class="playerAmount playerAmountInput" type="radio" name="playerCount"
                            value="4">
                     <label for="playerCount4" class="playerAmountLabel playerAmount">4</label>
-                </div>
-                <div class="right-control">
                     <div class="button-wrapper">
-                        <button class="btn-warning" id="newGame" value="New Game" type="button" name="button">New Game
+                        <button class="btn-warning" id="newGame" value="New Game" type="button" name="newGame">New Game
                         </button>
                     </div>
                 </div>

@@ -11,19 +11,15 @@ var MIN_PLAYER_COUNT = 2;
 var MAX_PLAYER_COUNT = 4;
 
 /* Global data. */
-
 var gGame = null;
 
 /* Program initialization. */
 $(document).ready(function () {
-    console.log('Document ready, creating game.');
+    //console.log('Document ready, creating game.');
 
     // Create the global object for the Calculator.
     gGame = new Game();
     gGame.resetGame();
-
-    // TODO: Fill in the logo section if not already filled in by HTML.
-
 });
 
 /********************************************************************************
@@ -31,7 +27,7 @@ $(document).ready(function () {
  *      Main Game object to synchronize the overall game play.
  ********************************************************************************/
 function Game() {
-    console.log('Game: constructor');
+    //console.log('Game: constructor');
     this.gameWidth = null;
     this.winLength = null;
     this.cellCount = null;
@@ -58,7 +54,7 @@ function Game() {
     //
     // Reset the game, either based on program initialization or the 'New Game' button.
     this.resetGame = function() {
-        console.log('resetGame');
+        //console.log('resetGame');
 
         // Get the settings for this game.
         this.gameWidth = this.controlPanel.getGameWidth();
@@ -69,6 +65,10 @@ function Game() {
         self.makePlayersActive();
         // Reset the gameplay information.
         this.currentPlayerNum = 0;
+        this.players[0].setCurrent(true);
+        for (var p = 1; p < this.players.length; p++) {
+            this.players[p].setCurrent(false);
+        }
         this.gameOver = false;
 
         // Delete any old cells.
@@ -85,16 +85,16 @@ function Game() {
 
     // Notification from the cell that it was clicked.
     this.notifyCellClicked = function(cellNum) {
-        console.log('notifyCellClicked: ' + cellNum);
+        //console.log('notifyCellClicked: ' + cellNum);
         self.savedCellNum = cellNum;
         var cell = self.cells[cellNum];
 
         if (this.gameOver) {
-            console.log('Game already over: ignoring click');
+            //console.log('Game already over: ignoring click');
         } else if (cell.getOwner() !== null) {
             // If this is already clicked, ignore it.
             var playerName = self.players[cell.getOwner()].getPlayerName();
-            console.log(cell.getCellName() + ' is already owned by ' + playerName);
+            //console.log(cell.getCellName() + ' is already owned by ' + playerName);
             // TODO: Add some animation and/or sound if they should not have clicked here.
         } else {
             // TODO: Currently has 1-in-3 chance of asking a question; this could be made user-selectable.
@@ -104,7 +104,7 @@ function Game() {
             } else {
                 // Make the user answer a question before completing their turn.
                 var correct = askRandomQuestion(self);
-                console.log('notifyCellClicked: correct: ', correct);
+                //console.log('notifyCellClicked: correct: ', correct);
 
 
             }
@@ -121,7 +121,7 @@ function Game() {
         if (success === undefined) {
             success = true;
         }
-        console.log('completeCurrentTurn: ' + cellNum + ', ' + success);
+        //console.log('completeCurrentTurn: ' + cellNum + ', ' + success);
 
         if (success) {
             var cell = self.cells[cellNum];
@@ -133,17 +133,23 @@ function Game() {
             // Check whether the current play creates a winner or a stalemate.
             var winningCells = self.checkForWinner(cellNum);
             if (winningCells.length >= self.winLength) {
-                var message = player.getPlayerName() + ' is the winner!'
-                console.log(message);
+                var message = player.getPlayerName() + ' is the winner!';
+                //console.log(message);
                 self.gameOver = true;
+
+                // Highlight the winning cells on the game board.
+                for (var i = 0; i < winningCells.length; i++) {
+                    self.cells[winningCells[i]].setWinner();
+                }
+
                 displayNotifyModal(message);
             } else if (++this.cellsFilled === this.cellCount) {
-                console.log('Game over without a winner.');
+                //console.log('Game over without a winner.');
                 self.gameOver = true;
                 displayNotifyModal('OOPS! The game over with no winner.')
             }
         } else {
-            console.log('completeCurrentTurn: ignoring failed question.')
+            //console.log('completeCurrentTurn: ignoring failed question.')
         }
 
         // Now move on to the next player.
@@ -152,7 +158,7 @@ function Game() {
 
     // Move to the next player in the rotation.
     this.selectNextPlayer = function() {
-        console.log('selectNextPlayer: was ' + this.currentPlayerNum);
+        //console.log('selectNextPlayer: was ' + this.currentPlayerNum);
 
         // Clear the flag for the current player.
         this.players[this.currentPlayerNum].setCurrent(false);
@@ -166,12 +172,12 @@ function Game() {
 
         // Set the flag for the new player.
         this.players[this.currentPlayerNum].setCurrent(true);
-        console.log('selectNextPlayer: now ' + this.currentPlayerNum);
+        //console.log('selectNextPlayer: now ' + this.currentPlayerNum);
     };
 
     // Check whether the specified cell is a winner. If so, return array of winning cell numbers.
     this.checkForWinner = function(cellNum) {
-        console.log('checkForWinner: ' + cellNum);
+        //console.log('checkForWinner: ' + cellNum);
         var matchArray = [];
 
         // Check for matches left and right (x offset 1, y offset 0).
@@ -204,10 +210,10 @@ function Game() {
 
     // Check for matches in a negative direction plus a positive direction. Return array of matches.
     this.checkMatches = function(cellNum, xOffset, yOffset) {
-        console.log('checkMatches: ' + cellNum + ' <' + xOffset + ',' + yOffset + '>');
+        //console.log('checkMatches: ' + cellNum + ' <' + xOffset + ',' + yOffset + '>');
         var cellY = Math.floor(cellNum / this.gameWidth);
         var cellX = cellNum - (cellY * this.gameWidth);
-        console.log('checkMatches: at (', + cellX + ',' + cellY + ')');
+        //console.log('checkMatches: at (', + cellX + ',' + cellY + ')');
 
         var matchOwner = this.cells[cellNum].getOwner();
         var retArray = [cellNum];
@@ -222,11 +228,11 @@ function Game() {
         curY = cellY - yOffset;
 
         // Check cells in the negative direction while still on the board, adding matches.
-        console.log('Check: ' + curCellNum + ' = (' + curX + ',' + curY + ')');
+        //console.log('Check: ' + curCellNum + ' = (' + curX + ',' + curY + ')');
         while (curCellNum >= 0 && curX >= 0 && curY >= 0 &&
                 curCellNum <= this.cellCount && curX < this.gameWidth && curY < this.gameWidth &&
                 this.cells[curCellNum].getOwner() == matchOwner) {
-            console.log('Match at ' + curCellNum);
+            //console.log('Match at ' + curCellNum);
             retArray.push(curCellNum);
             curCellNum -= cellOffset;
             curX -= xOffset;
@@ -239,21 +245,21 @@ function Game() {
         curY = cellY + yOffset;
 
         // Check cells in the positive direction while still on the board, adding matches.
-        console.log('Check: ' + curCellNum + ' = (' + curX + ',' + curY + ')');
+        //console.log('Check: ' + curCellNum + ' = (' + curX + ',' + curY + ')');
         while (curCellNum >= 0 && curX >= 0 && curY >= 0 &&
                 curCellNum <= this.cellCount && curX < this.gameWidth && curY < this.gameWidth &&
                 this.cells[curCellNum].getOwner() == matchOwner) {
-            console.log('Match at ' + curCellNum);
+            //console.log('Match at ' + curCellNum);
             retArray.push(curCellNum);
             curCellNum += cellOffset;
             curX += xOffset;
             curY += yOffset;
         }
-        console.log(retArray);
+        //console.log(retArray);
         return retArray;
     };
     this.makePlayersActive = function() {
-        console.log('this is the makePlayers Active function');
+        //console.log('this is the makePlayers Active function');
         if (self.playerCount < 4){
             self.players[3].setInactive();
 
@@ -290,13 +296,13 @@ function Cell(parent, cellNum) {
     // Cell name is just shorthand for 'Cell n'.
     this.cellName = 'Cell ' + cellNum;
     this.getCellName = function() { return this.cellName };
-    console.log(this.cellName + ': constructor');
+    //console.log(this.cellName + ': constructor');
 
     // Owner = null if cell free, otherwise player number.
     this.owner = null;
     this.getOwner = function() { return this.owner };
     this.setOwner = function(playerNum) {
-        console.log(this.cellName + ': setOwner to ' + playerNum);
+        //console.log(this.cellName + ': setOwner to ' + playerNum);
         this.owner = playerNum;
         this.element.addClass('player'+ playerNum);
     };
@@ -305,19 +311,24 @@ function Cell(parent, cellNum) {
     this.lastPlayed = false;
     this.isLastPlayed = function() { return this.lastPlayed };
     this.setLastPlayed = function() {
-        console.log(this.cellName + ': setLastPlayed');
+        //console.log(this.cellName + ': setLastPlayed');
         // TODO: Add class that highlights the cell.
         this.lastPlayed = true;
     };
     this.clearLastPlayed = function() {
-        console.log(this.cellName + ': clearLastPlayed');
+        //console.log(this.cellName + ': clearLastPlayed');
         // TODO: Remove class that highlights the cell.
         this.lastPlayed = false;
     };
 
+    // Set the winner flag on this cell.
+    this.setWinner = function() {
+        this.element.addClass('winner');
+    };
+
     // Main click handler for the cell.
     this.onClick = function() {
-        console.log(self.cellName + ': clicked');
+        //console.log(self.cellName + ': clicked');
         self.parent.notifyCellClicked(self.cellNum);
     };
 
@@ -334,7 +345,7 @@ function Cell(parent, cellNum) {
  *      control panel information to the main Game object.
  ********************************************************************************/
 function ControlPanel(parent) {
-    console.log('ControlPanel: constructor');
+    //console.log('ControlPanel: constructor');
 
     // Save a copy of this as self.
     var self = this;
@@ -354,7 +365,7 @@ function ControlPanel(parent) {
     $('#gameSize').change(function() {
          var gameCells = parseInt($('#gameSize').val());
         self.gameWidth = gameCells;
-        console.log('game width is now ' + self.gameWidth);
+        //console.log('game width is now ' + self.gameWidth);
         $('span.gameSizeText').text(self.gameWidth);
     });
 
@@ -367,7 +378,7 @@ function ControlPanel(parent) {
         self.winLength = winWay;
          if(self.winLength > self.gameWidth) {
              self.winLength = self.gameWidth;
-             console.log('winLength was greater than gameLength so winLength is ' + self.winLength);
+             //console.log('winLength was greater than gameLength so winLength is ' + self.winLength);
          } else {
              self.winLength = winWay;
          }
@@ -379,9 +390,9 @@ function ControlPanel(parent) {
     this.playerCount = MIN_PLAYER_COUNT;
     this.getPlayerCount = function() { return this.playerCount };
 
-    console.log('before newGame function');
+    //console.log('before newGame function');
     $('#newGame').click(function() {
-        console.log('newGame is being called');
+        //console.log('newGame is being called');
         self.parent.resetGame();
 
     });
@@ -391,7 +402,7 @@ function ControlPanel(parent) {
         var playerAmount;
         playerAmount = parseInt($('input[type=radio]:checked').val());
         self.playerCount = playerAmount;
-        console.log(self.playerCount + ' players selected');
+        //console.log(self.playerCount + ' players selected');
 
     });
 
@@ -403,7 +414,7 @@ function ControlPanel(parent) {
  *      Main Player object to hold the context of one of the players.
  ********************************************************************************/
 function Player(parent, playerNum) {
-    console.log('Player ' + playerNum + ': constructor');
+    //console.log('Player ' + playerNum + ': constructor');
 
     // Save a copy of this as self.
     var self = this;
@@ -423,11 +434,11 @@ function Player(parent, playerNum) {
 
     //Functions to make players inactive
     this.setInactive = function() {
-        console.log('Setting the player to inactive');
+        //console.log('Setting the player to inactive');
         $(self.element).addClass('inactive');
     };
     this.setActive = function() {
-        console.log('setting the player to active');
+        //console.log('setting the player to active');
         $(self.element).removeClass('inactive');
     };
 
@@ -447,7 +458,7 @@ function Player(parent, playerNum) {
             this.imageFile = 'images/William_Shakespeare.png';
             break;
         default:
-            console.log('Invalid playerNum ' + playerNum);
+            //console.log('Invalid playerNum ' + playerNum);
             this.imageFile = null;
             break;
     }
@@ -457,11 +468,10 @@ function Player(parent, playerNum) {
     // Current flag of whether this is the current player.
     this.current = false;
     this.setCurrent = function(current) {
-        console.log(this.getPlayerName() + ': setCurrent: ' + current);
+        //console.log(this.getPlayerName() + ': setCurrent: ' + current);
         this.current = current;
-        // TODO: Add/remove class based on whether this player is current.
         if(current) {
-            console.log('At current', self.element);
+            //console.log('At current', self.element);
             $(self.element).addClass('current-player');
         }
         else {
