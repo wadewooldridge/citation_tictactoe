@@ -181,7 +181,7 @@ var questions = [
 var gQuestionObject = null;
 
 function askRandomQuestion(parent) {
-    console.log('askRandomQuestion');
+    //console.log('askRandomQuestion');
     // Pick a random question object.
     gQuestionObject = questions[Math.floor(Math.random() * questions.length)];
     var i;
@@ -213,7 +213,7 @@ function askRandomQuestion(parent) {
 
         // Click handler for the answer paragraphs.
         ansElem.click(function() {
-            console.log('Model click handler');
+            //console.log('Model click handler');
             var correct;
 
             // Reveal all the right and wrong answers.
@@ -221,11 +221,11 @@ function askRandomQuestion(parent) {
 
             // Set the footer based on whether this is the right answer.
             if ($(this).hasClass('right-answer')) {
-                console.log('Right answer');
+                //console.log('Right answer');
                 $('#question-footer-p').text('Correct! ' + gQuestionObject.notes);
                 correct = true;
             } else {
-                console.log('Wrong answer');
+                //console.log('Wrong answer');
                 $('#question-footer-p').text('Incorrect! ' + gQuestionObject.notes);
                 correct = false;
             }
@@ -233,47 +233,13 @@ function askRandomQuestion(parent) {
         });
 
         ansElem.appendTo(modalBodyElem);
-
     }
-/*
-    // Have the hiding of this modal call back to continue the game.
-    modalElem.on('hide.bs.modal', function() {
-        if (gCorrect === null) {
-            console.log('modal hide ignored.');
-        }
-        console.log('Modal now hidden.');
-        parent.completeCurrentTurn(cellNum, gCorrect);
-    });
-*/
 
     modalElem.modal('show');
-
-/*
-    // Build a custom modal object.
-    var specifier = '<div class="custom-modal modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">' +
-                    '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" ' +
-                    'aria-hidden="true">×</button></div><div class="modal-body"></div><div class="modal-footer">' +
-                    '<button class="btn" data-dismiss="modal">Close</button></div></div>';
-    var customModal = $(specifier);
-
-    // Now add the text information to the modal.
-    $('<p>').text('Test1').appendTo('.custom-modal .modal-header');
-    $('<p>').text('Test2').appendTo('.custom-modal .modal-body');
-
-    $('body').append(customModal); // appends the dynamically created modal to the body
-
-    $('.custom-modal .hide').show();
-    $('.custom-modal').modal();
-
-    $('.custom-modal').on('hidden', function(){
-        console.log("hidden");
-        $('.custom-modal').remove();
-    });
-*/
 }
 
 function displayNotifyModal(newText) {
-    console.log('displayNotifyModal');
+    //console.log('displayNotifyModal');
 
     var modalElem = $('#notify-modal');
     var modalBodyElem = $('#notify-body');
@@ -282,5 +248,4 @@ function displayNotifyModal(newText) {
     $('#notify-body p').text(newText);
 
     modalElem.modal('show');
-    // TODO: Figure out why this displays the question modal as well.
 }
